@@ -203,7 +203,7 @@
         let viaCount = 0;
 
         // JSON laden
-        fetch('bw_rail.json')
+        fetch('bw_rail_vmax.json')
             .then(res => res.json())
             .then(data => { nodes = data.stations; edges = data.edges; buildGraph(); initAutocomplete(); });
 
@@ -349,3 +349,4 @@
 </body>
 
 </html>
+
