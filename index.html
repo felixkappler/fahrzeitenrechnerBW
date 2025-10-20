@@ -105,6 +105,10 @@
             text-decoration: none;
             color: #ffdd00;
         }
+        
+        .vias {
+            margin-top: 5px;
+        }
 
         /* --- Mobilversion --- */
         @media (max-width: 8800px) {
@@ -186,7 +190,8 @@
             <span id="time"></span>
         </div>
 
-        <h3 class="info">Entwickelt von <a class="link" href="https://flowwebdesign.de">FlowWebDesign</a> v0.1.3beta
+        <h3 class="info">Entwickelt von <a class="link" href="https://flowwebdesign.de">FlowWebDesign</a> v0.1.6beta
+        <p>Feedback gerne per <a class="link" href="mailto:info@flowwebdesign.de">Mail</a></p>
         </h3>
     </div>
 
@@ -281,7 +286,7 @@
             const div = document.createElement("div");
             div.className = "control-group";
             div.innerHTML = `
-<input type="text" id="via${viaCount}" placeholder="Zwischenhalt ${viaCount}">
+<input class="control-group" type="text" id="via${viaCount}" placeholder="Zwischenhalt ${viaCount}">
 <div id="suggestions-via${viaCount}" class="suggestions"></div>
 `;
             document.getElementById("vias").appendChild(div);
@@ -313,7 +318,7 @@
             let lastNode = start;
             [...viaNodes, end].forEach(nextNode => {
                 const segment = dijkstra(graph, lastNode.id, nextNode.id, userVmax);
-                if (segment.length < 2) { alert(`Keine Route von ${lastNode.name} nach ${nextNode.name}`); return; }
+                if (segment.length < 2) { alert(`Dies ist eine Beta Version die Route von ${lastNode.name} nach ${nextNode.name} ist noch nicht verfügbar!`); return; }
                 if (fullPath.length > 0) segment.shift();
                 fullPath = fullPath.concat(segment);
                 lastNode = nextNode;
@@ -349,4 +354,3 @@
 </body>
 
 </html>
-
