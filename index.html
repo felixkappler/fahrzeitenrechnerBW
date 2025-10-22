@@ -1,356 +1,358 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Zugroute Baden-Württemberg</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BW Rail Explorer</title>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+body { margin:0; font-family: system-ui, Arial; }
+#app { display:flex; flex-direction:row; height:100vh; }
+#left { width:380px; min-width:300px; padding:12px; box-sizing:border-box; overflow:auto; background:#f7f8fb; }
+#map { flex:1; }
+.field { margin-bottom:10px; }
+label { display:block; font-weight:600; margin-bottom:6px; }
+input[type=text], input[type=number], select { width:100%; padding:8px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; font-size:1rem; }
+button { padding:10px 14px; border-radius:8px; border:0; background:#2b7cff; color:white; cursor:pointer; font-size:1rem; }
+button:active { transform:scale(0.98); }
+.small { font-size:0.9rem; color:#444; }
+#results { margin-top:12px; }
+table { width:100%; border-collapse:collapse; }
+th, td { padding:6px 8px; border-bottom:1px solid #e6e9ef; text-align:left; font-size:0.9rem; }
+.hint { font-size:0.85rem; color:#666; }
+.autocomplete-list{ background:white; border:1px solid #ddd; max-height:200px; overflow:auto; position:relative; z-index:1000; }
+.autocomplete-item{ padding:6px 8px; cursor:pointer; }
+.autocomplete-item:hover{ background:#f0f4ff; }
 
-        /* Wrapper für Controls + Info */
-        #controls-wrapper {
-            position: relative;
-        }
 
-        /* Controls */
-        #controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 10px;
-            background: #f0f0f0;
-            align-items: flex-start;
-            z-index: 1000;
-        }
+/* --- Responsive Styles --- */
+@media (max-width: 768px) {
+#app { flex-direction: column; }
+#left { width:100%; height:auto; max-height:45vh; border-bottom:1px solid #ccc; }
+#map { flex:1; height:55vh; }
+table, th, td { font-size:0.8rem; }
+button { width:100%; margin-bottom:6px; }
+#clear { margin-left:0; background:#999; }
+}
 
-        .control-group {
-            position: relative;
-            flex: 1 1 200px;
-        }
 
-        #controls input[type="text"],
-        #controls input[type="number"] {
-            width: 100%;
-            padding: 6px 10px;
-            border-radius: 8px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            outline: none;
-            box-shadow: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-
-        #controls button {
-            padding: 6px 12px;
-            border-radius: 8px;
-            background: #ffdd00;
-            border: none;
-            cursor: pointer;
-            flex: 1 1 120px;
-        }
-
-        .suggestions {
-            position: absolute;
-            top: 38px;
-            left: 0;
-            width: 100%;
-            background: #fff;
-            border: none;
-            border-radius: 15px;
-            max-height: 150px;
-            overflow-y: auto;
-            z-index: 10000;
-        }
-
-        .suggestions div {
-            padding: 5px;
-            cursor: pointer;
-        }
-
-        .suggestions div:hover {
-            background: #eee;
-        }
-
-        #map {
-            height: calc(100vh - 100px);
-            width: 100%;
-            border-radius: 0;
-        }
-
-        #time {
-            width: 100%;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        /* Versionszeile Desktop oben rechts */
-        .info {
-            font-size: 0.9em;
-            position: relative;
-            top: 10px;
-            left: 40%;
-            margin-top: 30px;
-        }
-
-        /* Links ohne Unterstreichung */
-        .link {
-            text-decoration: none;
-            color: #ffdd00;
-        }
-        
-        .vias {
-            margin-top: 5px;
-        }
-
-        /* --- Mobilversion --- */
-        @media (max-width: 8800px) {
-            body {
-                background: #000;
-            }
-
-            #controls {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 4px;
-                padding: 6px;
-                width: 80%;
-                height: auto;
-                margin-left: 10%;
-                border-radius: 15px;
-            }
-
-            .control-group {
-                flex: 1 1 100%;
-            }
-
-            #controls input[type="text"],
-            #controls input[type="number"] {
-                padding: 4px 6px;
-                height: 50px;
-            }
-
-            #controls button {
-                flex: 1 1 100%;
-                padding: 5px 8px;
-            }
-
-            .suggestions {
-                top: 32px;
-                max-height: 120px;
-            }
-
-            .info {
-                position: static;
-                text-align: center;
-                margin-top: 4px;
-                color: #f0f0f0;
-            }
-
-            #map {
-                height: calc(100vh - 300px);
-                width: 80%;
-                border-radius: 15px;
-                left: 10%;
-            }
-        }
-    </style>
+@media (max-width: 480px) {
+body { font-size:0.9rem; }
+#left { padding:8px; }
+h2 { font-size:1.1rem; }
+input, button { font-size:0.9rem; }
+table, th, td { font-size:0.75rem; }
+}
+  </style>
 </head>
-
 <body>
-    <div id="controls-wrapper">
-        <div id="controls">
-            <div class="control-group">
-                <input type="text" id="start" placeholder="Startbahnhof">
-                <div id="suggestions-start" class="suggestions"></div>
-            </div>
-            <div class="control-group">
-                <input type="text" id="end" placeholder="Zielbahnhof">
-                <div id="suggestions-end" class="suggestions"></div>
-            </div>
-            <div class="control-group">
-                <input type="number" id="maxV" placeholder="Max. Geschwindigkeit (km/h)" value="120" min="10">
-            </div>
+  <div id="app">
+    <div id="left">
+      <h2>BW Rail Explorer</h2>
+      <p class="small">Berechnet Fahrzeit und Strecke entlang des Schienennetzes in Baden-Württemberg. Die Daten stammen von OpenStreetMap / Overpass.</p>
+      <p>Falls Fehler auftreten (was oft vorkommen kann), versuche es einfach noch einmal (oft xD) – meistens funktioniert es dann.<br> Ansonsten melde dich <a href="mailto:info@flowwebdesign.de">hier</a>.</p>
+        <p>Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> - Version 0.8beta</p>
 
-            <!-- Zwischenhalte -->
-            <div class="control-group" id="viaWrapper">
-                <label>Zwischenhalte:</label>
-                <div id="vias"></div>
-                <button type="button" id="addVia">+ Zwischenhalt hinzufügen</button>
-            </div>
+      <div class="field">
+        <label for="from">Startbahnhof</label>
+        <input id="from" type="text" placeholder="Bahnhof suchen (Autocomplete)" autocomplete="off" />
+        <div id="from-list" class="autocomplete-list" style="display:none"></div>
+      </div>
 
-            <button id="routeBtn">Route berechnen</button>
-            <span id="time"></span>
-        </div>
+      <div class="field">
+        <label for="to">Zielbahnhof</label>
+        <input id="to" type="text" placeholder="Bahnhof suchen (Autocomplete)" autocomplete="off" />
+        <div id="to-list" class="autocomplete-list" style="display:none"></div>
+      </div>
 
-        <h3 class="info">Entwickelt von <a class="link" href="https://flowwebdesign.de">FlowWebDesign</a> v0.1.6beta
-        <p>Feedback gerne per <a class="link" href="mailto:info@flowwebdesign.de">Mail</a></p>
-        </h3>
+      <div class="field">
+        <label for="via">Wegpunkte (optional) — mit Komma getrennt; z.B. "Heilbronn, Tübingen"</label>
+        <input id="via" type="text" placeholder="Städte oder Bahnhöfe, durch Komma getrennt" />
+      </div>
+
+      <div class="field">
+        <label for="vmax">Zug V<sub>max</sub> (km/h)</label>
+        <input id="vmax" type="number" min="10" max="300" value="120" />
+        <div class="hint">Die Strecken-/Segment-Vmax in OSM (wenn vorhanden) hat Vorrang.</div>
+      </div>
+
+      <div class="field">
+        <button id="calc">Route berechnen</button>
+        <button id="clear" style="background:#999; margin-left:8px">Zurücksetzen</button>
+      </div>
+
+      <div id="results">
+        <h3>Ergebnis</h3>
+        <div id="summary" class="small">Keine Route berechnet.</div>
+        <div id="table-wrap"></div>
+      </div>
+
+      <hr />
+      <div class="small">Hinweis: Diese Beta-Version verwendet die öffentliche Overpass-API & Nominatim für Autocomplete.</div>
     </div>
 
-    <section class="map">
-        <div id="map"></div>
-    </section>
+    <div id="map"></div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        let nodes = [], edges = [], graph = {};
-        let map = L.map('map').setView([48.78, 9.18], 8);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        let routeLayer = null;
-        let viaCount = 0;
+  <!-- libs -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- turf not necessary; using simple haversine -->
 
-        // JSON laden
-        fetch('bw_rail_vmax.json')
-            .then(res => res.json())
-            .then(data => { nodes = data.stations; edges = data.edges; buildGraph(); initAutocomplete(); });
+  <script>
+    document.addEventListener('contextmenu', event => event.preventDefault());
+  // --- Hilfsfunktionen ---
+  function haversine(a, b){
+    const R = 6371000; // m
+    const toRad = x => x * Math.PI/180;
+    const dLat = toRad(b.lat - a.lat);
+    const dLon = toRad(b.lon - a.lon);
+    const lat1 = toRad(a.lat), lat2 = toRad(b.lat);
+    const sinDlat = Math.sin(dLat/2), sinDlon = Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(sinDlat*sinDlat + Math.cos(lat1)*Math.cos(lat2)*sinDlon*sinDlon), Math.sqrt(1 - (sinDlat*sinDlat + Math.cos(lat1)*Math.cos(lat2)*sinDlon*sinDlon)));
+    return R * c; // meters
+  }
 
-        // Graph aufbauen
-        function buildGraph() {
-            graph = {};
-            nodes.forEach(n => graph[n.id] = []);
-            edges.forEach(e => {
-                graph[e.from].push({ to: e.to, distance: e.distance, vmax: e.vmax });
-                graph[e.to].push({ to: e.from, distance: e.distance, vmax: e.vmax });
-            });
+  // Priority queue simple
+  class PQ{
+    constructor(){ this._items=[]; }
+    push(item, pr){ this._items.push({item,pr}); this._items.sort((a,b)=>a.pr-b.pr); }
+    pop(){ return this._items.shift()?.item; }
+    empty(){ return this._items.length===0; }
+  }
+
+  // Dijkstra auf Graph {nodes: {id:{lat,lon}}, edges: {u:[{v,len_m,wayid, maxspeed}]}}
+  function dijkstra(graph, startId, endId, trainVmax_kmh){
+    const dist = {}; const prev = {}; const pq = new PQ();
+    Object.keys(graph.nodes).forEach(id=>dist[id]=Infinity);
+    dist[startId]=0; pq.push(startId,0);
+    while(!pq.empty()){
+      const u = pq.pop();
+      if(u===endId) break;
+      const edges = graph.edges[u]||[];
+      for(const e of edges){
+        // effective speed limited by both trainVmax and edge.maxspeed (if present)
+        const edgeV = e.maxspeed ? Math.min(trainVmax_kmh, e.maxspeed) : trainVmax_kmh;
+        const timeSec = (e.len_m / 1000) / (edgeV/60/60) ; // incorrect formula? let's compute correctly
+        // convert: time hours = len_km / speed_kmh. time seconds = hours*3600 = len_km/speed_kmh*3600 = len_m/1000/speed_kmh*3600
+        const timeSeconds = (e.len_m/1000) / edgeV * 3600;
+        const alt = dist[u] + timeSeconds; // cost = time in seconds
+        if(alt < dist[e.v]){ dist[e.v]=alt; prev[e.v]= {from:u, edge:e}; pq.push(e.v, alt); }
+      }
+    }
+    if(!prev[endId]) return null; // no path
+    // reconstruct path
+    const path=[]; let cur=endId; while(cur!==startId){ const p=prev[cur]; path.push({to:cur, from:p.from, edge:p.edge}); cur=p.from; }
+    path.reverse();
+    return {path, time_s: dist[endId]};
+  }
+
+  // --- Map ---
+  const map = L.map('map').setView([48.7,9.2],8);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{ maxZoom:19, attribution:'© OpenStreetMap contributors' }).addTo(map);
+  const routeLayer = L.layerGroup().addTo(map);
+  const stationLayer = L.layerGroup().addTo(map);
+
+  // --- UI elements ---
+  const fromInput = document.getElementById('from');
+  const toInput = document.getElementById('to');
+  const viaInput = document.getElementById('via');
+  const vmaxInput = document.getElementById('vmax');
+  const calcBtn = document.getElementById('calc');
+  const clearBtn = document.getElementById('clear');
+  const summaryDiv = document.getElementById('summary');
+  const tableWrap = document.getElementById('table-wrap');
+  const fromList = document.getElementById('from-list');
+  const toList = document.getElementById('to-list');
+
+  let selectedFrom = null; let selectedTo = null; let selectedVias = [];
+
+  // --- Autocomplete via Nominatim (railway=station) ---
+  async function nominatimSearch(q){
+    if(!q || q.length<2) return [];
+    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(q)}&extratags=1&limit=8&countrycodes=de&namedetails=1`;
+    const res = await fetch(url,{headers:{'Accept':'application/json'}});
+    const js = await res.json();
+    // filter for station-like results
+    return js.map(r=>({display:r.display_name, lat:parseFloat(r.lat), lon:parseFloat(r.lon), props:r}));
+  }
+
+  function attachAutocomplete(inputEl, listEl, onSelect){
+    let timer=null;
+    inputEl.addEventListener('input', ()=>{
+      clearTimeout(timer);
+      timer = setTimeout(async ()=>{
+        const q = inputEl.value.trim();
+        if(!q){ listEl.style.display='none'; return; }
+        const items = await nominatimSearch(q);
+        listEl.innerHTML='';
+        if(items.length===0){ listEl.style.display='none'; return; }
+        for(const it of items){
+          const div = document.createElement('div'); div.className='autocomplete-item'; div.textContent=it.display;
+          div.addEventListener('click', ()=>{ onSelect(it); listEl.style.display='none'; });
+          listEl.appendChild(div);
         }
+        listEl.style.display='block';
+      }, 250);
+    });
+    document.addEventListener('click', e=>{ if(!inputEl.contains(e.target) && !listEl.contains(e.target)) listEl.style.display='none'; });
+  }
 
-        // Dijkstra
-        function dijkstra(graph, startId, endId, userVmax) {
-            const dist = {}, prev = {}, pq = [];
-            for (const id in graph) dist[id] = Infinity;
-            dist[startId] = 0; pq.push({ id: startId, dist: 0 });
-            while (pq.length > 0) {
-                pq.sort((a, b) => a.dist - b.dist);
-                const { id: u } = pq.shift();
-                if (u == endId) break;
-                graph[u].forEach(e => {
-                    const speed = Math.min(e.vmax, userVmax);
-                    const alt = dist[u] + e.distance / speed;
-                    if (alt < dist[e.to]) { dist[e.to] = alt; prev[e.to] = u; pq.push({ id: e.to, dist: alt }); }
-                });
-            }
-            const path = []; let u = endId;
-            while (u !== undefined) { path.unshift(u); u = prev[u]; }
-            return path;
-        }
+  attachAutocomplete(fromInput, fromList, (it)=>{ selectedFrom=it; fromInput.value = it.display; addStationMarker(it, 'start'); });
+  attachAutocomplete(toInput, toList, (it)=>{ selectedTo=it; toInput.value = it.display; addStationMarker(it, 'end'); });
 
-        // Autocomplete
-        function initAutocomplete() {
-            function ac(input, suggDiv) {
-                input.addEventListener("input", () => {
-                    const val = input.value.toLowerCase();
-                    suggDiv.innerHTML = "";
-                    if (!val) return;
-                    const matches = nodes.filter(s => s.name && s.name.toLowerCase().includes(val)).slice(0, 10);
-                    matches.forEach(s => {
-                        const div = document.createElement("div");
-                        div.textContent = s.name;
-                        div.onclick = () => { input.value = s.name; suggDiv.innerHTML = ""; };
-                        suggDiv.appendChild(div);
-                    });
-                });
-            }
-            ac(document.getElementById("start"), document.getElementById("suggestions-start"));
-            ac(document.getElementById("end"), document.getElementById("suggestions-end"));
-        }
+  function addStationMarker(it, role){
+    const m = L.marker([it.lat, it.lon], {title: it.display}).addTo(stationLayer).bindPopup(`<b>${role.toUpperCase()}</b><br>${it.display}`);
+    map.panTo([it.lat, it.lon]);
+  }
 
-        // Autocomplete für Zwischenhalte
-        function initAutocompleteForInput(inputId, suggDivId) {
-            const input = document.getElementById(inputId);
-            const suggDiv = document.getElementById(suggDivId);
-            input.addEventListener("input", () => {
-                const val = input.value.toLowerCase();
-                suggDiv.innerHTML = "";
-                if (!val) return;
-                const matches = nodes.filter(s => s.name && s.name.toLowerCase().includes(val)).slice(0, 10);
-                matches.forEach(s => {
-                    const div = document.createElement("div");
-                    div.textContent = s.name;
-                    div.onclick = () => { input.value = s.name; suggDiv.innerHTML = ""; };
-                    suggDiv.appendChild(div);
-                });
-            });
-        }
+  clearBtn.addEventListener('click', ()=>{
+    selectedFrom=null; selectedTo=null; selectedVias=[]; fromInput.value=''; toInput.value=''; viaInput.value=''; vmaxInput.value=120; stationLayer.clearLayers(); routeLayer.clearLayers(); summaryDiv.textContent='Keine Route berechnet.'; tableWrap.innerHTML='';
+  });
 
-        // Zwischenhalt hinzufügen
-        document.getElementById("addVia").onclick = () => {
-            viaCount++;
-            const div = document.createElement("div");
-            div.className = "control-group";
-            div.innerHTML = `
-<input class="control-group" type="text" id="via${viaCount}" placeholder="Zwischenhalt ${viaCount}">
-<div id="suggestions-via${viaCount}" class="suggestions"></div>
-`;
-            document.getElementById("vias").appendChild(div);
-            initAutocompleteForInput(`via${viaCount}`, `suggestions-via${viaCount}`);
-        };
+  // --- Overpass query builder for bbox ---
+  function bboxFromPoints(points, pad_km=15){
+    // points: [{lat,lon}]
+    let minLat=90,maxLat=-90,minLon=180,maxLon=-180;
+    for(const p of points){ if(p.lat<minLat) minLat=p.lat; if(p.lat>maxLat) maxLat=p.lat; if(p.lon<minLon) minLon=p.lon; if(p.lon>maxLon) maxLon=p.lon; }
+    // pad ~ deg: 1 deg lat ~111km; lon depends on lat; use conservative pad
+    const padDeg = pad_km/111;
+    return [minLat-padDeg, minLon-padDeg, maxLat+padDeg, maxLon+padDeg];
+  }
 
-        // Route berechnen inkl. Zwischenhalte
-        document.getElementById("routeBtn").onclick = () => {
-            const userVmax = Number(document.getElementById("maxV").value) || 120;
+  // fetch railway ways and nodes inside bbox
+  async function fetchRailNetwork(bbox){
+    // bbox = [s,w,n,e]
+    const [s,w,n,e] = bbox;
+    // OverpassQL: ways[railway~"^(rail)$"](s,w,n,e); out geom; also nodes
+    const q = `[out:json][timeout:60];(way["railway"~"^(rail|railway)$"](${s},${w},${n},${e});>;);out body;`;
+    const url = 'https://overpass-api.de/api/interpreter';
+    const res = await fetch(url,{method:'POST',body:q,headers:{'Content-Type':'text/plain'}});
+    const js = await res.json();
+    // parse into nodes and ways
+    const nodes = {}; const ways = {};
+    for(const el of js.elements){
+      if(el.type==='node') nodes[el.id] = {id:el.id, lat:el.lat, lon:el.lon};
+      if(el.type==='way') ways[el.id] = el;
+    }
+    return {nodes, ways};
+  }
 
-            const startName = document.getElementById("start").value;
-            const endName = document.getElementById("end").value;
-            const start = nodes.find(n => n.name === startName);
-            const end = nodes.find(n => n.name === endName);
-            if (!start || !end) { alert("Bitte gültigen Start- und Zielbahnhof eintragen"); return; }
+  // Build graph from ways: nodes ids -> edges with length and maxspeed
+  function buildGraph(nodes, ways){
+    const graph = {nodes:{}, edges:{}};
+    for(const nid in nodes) graph.nodes[nid] = nodes[nid];
+    function addEdge(u,v, len, wayid, maxspeed){
+      if(!graph.edges[u]) graph.edges[u]=[];
+      graph.edges[u].push({v, len_m: len, wayid, maxspeed});
+    }
+    // iterate ways
+    for(const wid in ways){ const w = ways[wid]; const nds = w.nodes; // nodes ids array
+      // determine way maxspeed from tags
+      let maxspeed = null;
+      if(w.tags){ if(w.tags.maxspeed){ const parsed = parseInt(w.tags.maxspeed); if(!isNaN(parsed)) maxspeed = parsed; } }
+      for(let i=0;i<nds.length-1;i++){
+        const a = nodes[nds[i]]; const b = nodes[nds[i+1]]; if(!a||!b) continue;
+        const len = haversine({lat:a.lat,lon:a.lon},{lat:b.lat,lon:b.lon});
+        addEdge(String(a.id), String(b.id), len, wid, maxspeed);
+        addEdge(String(b.id), String(a.id), len, wid, maxspeed);
+      }
+    }
+    return graph;
+  }
 
-            const viaNodes = [];
-            for (let i = 1; i <= viaCount; i++) {
-                const viaInput = document.getElementById(`via${i}`);
-                if (viaInput && viaInput.value) {
-                    const viaNode = nodes.find(n => n.name === viaInput.value);
-                    if (!viaNode) { alert(`Zwischenhalt ${viaInput.value} nicht gefunden`); return; }
-                    viaNodes.push(viaNode);
-                }
-            }
+  // find nearest node id to latlon
+  function findNearestNode(nodes, lat, lon){
+    let best=null; let bestd=Infinity;
+    for(const id in nodes){ const n = nodes[id]; const d = haversine({lat:n.lat,lon:n.lon},{lat,lon}); if(d<bestd){ bestd=d; best=n; } }
+    return best; // returns node object
+  }
 
-            // Route segmentweise
-            let fullPath = [];
-            let lastNode = start;
-            [...viaNodes, end].forEach(nextNode => {
-                const segment = dijkstra(graph, lastNode.id, nextNode.id, userVmax);
-                if (segment.length < 2) { alert(`Dies ist eine Beta Version die Route von ${lastNode.name} nach ${nextNode.name} ist noch nicht verfügbar!`); return; }
-                if (fullPath.length > 0) segment.shift();
-                fullPath = fullPath.concat(segment);
-                lastNode = nextNode;
-            });
+  // --- Main: route calculation for sequence of points ---
+  async function computeRoute(points, trainVmax_kmh){
+    // points: [{lat,lon,display}]
+    // We'll for each segment fetch Overpass in bbox around segment only
+    const segmentResults = [];
+    let totalTimeSec = 0; let totalLen = 0;
+    const fullPolyline = [];
 
-            drawRoute(fullPath, userVmax);
-        };
+    for(let i=0;i<points.length-1;i++){
+      const a = points[i]; const b = points[i+1];
+      const bbox = bboxFromPoints([a,b], 12); // 12 km padding
+      const net = await fetchRailNetwork(bbox);
+      const graph = buildGraph(net.nodes, net.ways);
+      // find nearest nodes
+      const na = findNearestNode(net.nodes, a.lat, a.lon);
+      const nb = findNearestNode(net.nodes, b.lat, b.lon);
+      if(!na || !nb){ throw new Error('Keine Schienendaten im Ausschnitt gefunden.'); }
+      const res = dijkstra(graph, String(na.id), String(nb.id), trainVmax_kmh);
+      if(!res) throw new Error('Kein Pfad zwischen Punkten gefunden im geladenen Netz.');
+      // build segment polyline by walking node ids
+      const segCoords = [];
+      let cur = String(na.id);
+      segCoords.push([net.nodes[cur].lat, net.nodes[cur].lon]);
+      for(const step of res.path){
+        const to = step.to; segCoords.push([net.nodes[to].lat, net.nodes[to].lon]);
+      }
+      // accumulate
+      totalTimeSec += res.time_s;
+      // compute len
+      let segLen=0; for(let k=0;k<segCoords.length-1;k++) segLen += haversine({lat:segCoords[k][0],lon:segCoords[k][1]},{lat:segCoords[k+1][0],lon:segCoords[k+1][1]});
+      totalLen += segLen;
+      fullPolyline.push(...segCoords);
+      segmentResults.push({from:a.display||`${a.lat},${a.lon}`, to:b.display||`${b.lat},${b.lon}`, time_s:res.time_s, len_m:segLen});
+    }
+    return {segments:segmentResults, totalTime_s: totalTimeSec, totalLen_m: totalLen, polyline: fullPolyline};
+  }
 
-        // Route zeichnen
-        function drawRoute(path, userVmax) {
-            if (routeLayer) map.removeLayer(routeLayer);
-            const latlngs = []; let totalMinutes = 0;
-            for (let i = 0; i < path.length - 1; i++) {
-                const from = path[i], to = path[i + 1];
-                const edge = graph[from].find(e => e.to === to);
-                if (edge) {
-                    const nFrom = nodes.find(n => n.id == from); latlngs.push([nFrom.lat, nFrom.lon]);
-                    totalMinutes += (edge.distance / Math.min(edge.vmax, userVmax)) * 60;
-                }
-            }
-            const lastNode = nodes.find(n => n.id == path[path.length - 1]); latlngs.push([lastNode.lat, lastNode.lon]);
-            routeLayer = L.polyline(latlngs, { color: 'blue' }).addTo(map);
-            map.fitBounds(routeLayer.getBounds());
-            document.getElementById("time").textContent = " Fahrzeit ca. " + formatTime(totalMinutes);
-        }
+  // --- UI action ---
+  calcBtn.addEventListener('click', async ()=>{
+    try{
+      if(!selectedFrom || !selectedTo){ alert('Bitte Start- und Zielbahnhof wählen.'); return; }
+      // parse via
+      const viaStr = viaInput.value.trim();
+      const vias = viaStr ? viaStr.split(',').map(s=>s.trim()).filter(s=>s) : [];
+      // For each via, try to geocode using nominatim (first result)
+      const viaPoints = [];
+      for(const v of vias){ const r = await nominatimSearch(v); if(r.length>0) viaPoints.push(r[0]); else viaPoints.push({display:v, lat:null, lon:null}); }
+      // build points
+      const points = [selectedFrom, ...viaPoints, selectedTo];
+      // check missing
+      for(const p of points){ if(p.lat==null || p.lon==null){ alert('Ein Wegpunkt konnte nicht gefunden: '+p.display); return; } }
+      const vmax = Number(vmaxInput.value)||120;
+      summaryDiv.textContent = 'Berechne Route — bitte warten...';
+      routeLayer.clearLayers(); stationLayer.clearLayers();
+      addStationMarker(selectedFrom,'start'); addStationMarker(selectedTo,'end');
+      for(const vp of viaPoints) addStationMarker(vp,'via');
 
-        function formatTime(minutes) {
-            if (minutes <= 60) return Math.round(minutes) + " min";
-            const h = Math.floor(minutes / 60), m = Math.round(minutes % 60);
-            return h + ":" + (m < 10 ? "0" : "") + m + " h";
-        }
-    </script>
+      const res = await computeRoute(points, vmax);
+
+      // draw polyline
+      const poly = L.polyline(res.polyline.map(p=>[p[0],p[1]]), {weight:5}).addTo(routeLayer);
+      map.fitBounds(poly.getBounds(), {padding:[40,40]});
+
+      // table
+      const total_h = Math.floor(res.totalTime_s/3600);
+      const total_min = Math.round((res.totalTime_s%3600)/60);
+      summaryDiv.textContent = `Route: ${ (res.totalLen_m/1000).toFixed(1) } km — Fahrzeit: ${total_h}h ${total_min}min`;
+      let html = '<table><thead><tr><th>Abschnitt</th><th>Strecke (km)</th><th>Fahrzeit</th></tr></thead><tbody>';
+      res.segments.forEach((s, idx)=>{
+        const h = Math.floor(s.time_s/3600); const m = Math.round((s.time_s%3600)/60);
+        html += `<tr><td>${s.from} → ${s.to}</td><td>${(s.len_m/1000).toFixed(2)}</td><td>${h}h ${m}min</td></tr>`;
+      });
+      html += `</tbody></table>`;
+      tableWrap.innerHTML = html;
+
+    }catch(err){
+      console.error(err); alert('Fehler: '+err.message);
+      summaryDiv.textContent = 'Fehler bei der Berechnung.';
+    }
+  });
+
+  // initial map: show BW bbox for orientation
+  const bwBounds = [[47.45,7.8],[49.8,10.6]]; // approximate
+  L.rectangle(bwBounds,{color:'#2b7cff', weight:1, fill:false}).addTo(map);
+  map.fitBounds(bwBounds);
+  </script>
 </body>
-
 </html>
