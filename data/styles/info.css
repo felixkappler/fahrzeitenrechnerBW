@@ -1,0 +1,96 @@
+ :root {
+      --primary: #1a4d8f;
+      --secondary: #0069c2;
+      --bg: #f5f7fa;
+      --card-bg: #fff;
+      --text: #222;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    section {
+      background: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: var(--shadow);
+      padding: 1.8rem 2rem;
+      margin-bottom: 2rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    section:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    ul, ol {
+      margin-left: 1.4rem;
+    }
+
+    li {
+      margin-bottom: 0.4rem;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+      padding: 2rem 0;
+    }
+
+    .button {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 0.8rem 1.4rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .button:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    .problems ul {
+      list-style: "⚠️  ";
+    }
+
+    .icon {
+      font-size: 1.4rem;
+    }
