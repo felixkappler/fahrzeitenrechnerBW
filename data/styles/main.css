@@ -99,8 +99,8 @@ td {
 }
 
 .autocomplete-list {
-    background: white;
-    border: 1px solid #ddd;
+    background: rgb(246, 246, 246);
+    border-radius: 8px;
     max-height: 200px;
     overflow: auto;
     position: relative;
@@ -149,6 +149,10 @@ td {
     vertical-align: middle;
     margin-right: auto;
     border-radius: 7.5%;
+}
+
+.btn-via {
+    margin-top: 5px;
 }
 
 
@@ -232,3 +236,16 @@ a {
     text-decoration: none;
     color: #999;
 }
+
+.via-tag {
+  display: inline-block;
+  background: #ddd;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin: 3px;
+  cursor: pointer;
+}
+.via-tag:hover {
+  background: #ccc;
+}
+

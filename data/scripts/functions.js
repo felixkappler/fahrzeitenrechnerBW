@@ -76,6 +76,7 @@ const summaryDiv = document.getElementById('summary');
 const tableWrap = document.getElementById('table-wrap');
 const fromList = document.getElementById('from-list');
 const toList = document.getElementById('to-list');
+const viaList = document.getElementById('via-list');
 
 let selectedFrom = null, selectedTo = null, selectedVias = [];
 
@@ -163,16 +164,66 @@ function attachAutocomplete(inputEl, listEl, onSelect) {
   });
 }
 
+// --- Autocomplete für From, To, Via ---
 attachAutocomplete(fromInput, fromList, (it) => {
   selectedFrom = it;
   fromInput.value = it.display;
   addStationMarker(it, 'start');
 });
+
 attachAutocomplete(toInput, toList, (it) => {
   selectedTo = it;
   toInput.value = it.display;
   addStationMarker(it, 'end');
 });
+
+const addViaBtn = document.getElementById('add-via');
+const viaTagsDiv = document.getElementById('via-tags');
+
+attachAutocomplete(viaInput, viaList, (it) => {
+  viaInput.value = it.display;
+  viaInput.dataset.selectedLat = it.lat;
+  viaInput.dataset.selectedLon = it.lon;
+  viaInput.dataset.selectedDisplay = it.display;
+});
+
+// 🟢 Button zum Hinzufügen mehrerer Zwischenstopps
+addViaBtn.addEventListener('click', () => {
+  const display = viaInput.dataset.selectedDisplay;
+  const lat = parseFloat(viaInput.dataset.selectedLat);
+  const lon = parseFloat(viaInput.dataset.selectedLon);
+
+  if (!display || isNaN(lat) || isNaN(lon)) {
+    alert('Bitte zuerst einen Bahnhof auswählen.');
+    return;
+  }
+
+  const viaObj = { display, lat, lon };
+  selectedVias.push(viaObj);
+  addStationMarker(viaObj, 'via');
+  viaInput.value = '';
+  delete viaInput.dataset.selectedLat;
+  delete viaInput.dataset.selectedLon;
+  delete viaInput.dataset.selectedDisplay;
+
+  // UI aktualisieren
+  renderViaTags();
+});
+
+function renderViaTags() {
+  viaTagsDiv.innerHTML = '';
+  selectedVias.forEach((v, i) => {
+    const tag = document.createElement('span');
+    tag.className = 'via-tag';
+    tag.textContent = v.display + ' ✕';
+    tag.addEventListener('click', () => {
+      selectedVias.splice(i, 1);
+      renderViaTags();
+    });
+    viaTagsDiv.appendChild(tag);
+  });
+}
+
 
 // ------------------------------------------------------
 // 🗺️ Stationen & Karte
@@ -309,21 +360,18 @@ async function computeRoute(points, trainVmax_kmh) {
 // ------------------------------------------------------
 calcBtn.addEventListener('click', async () => {
   try {
-    if (!selectedFrom || !selectedTo) { alert('Bitte Start- und Zielbahnhof wählen.'); return; }
-
-    const viaStr = viaInput.value.trim();
-    const vias = viaStr ? viaStr.split(',').map(s => s.trim()).filter(s => s) : [];
-    const viaPoints = [];
-    for (const v of vias) {
-      const r = await nominatimSearch(v);
-      if (r.length > 0) viaPoints.push(r[0]);
-      else { alert('Wegpunkt nicht gefunden: ' + v); return; }
+    if (!selectedFrom || !selectedTo) {
+      alert('Bitte Start- und Zielbahnhof wählen.');
+      return;
     }
 
+    const viaPoints = selectedVias;
     const points = [selectedFrom, ...viaPoints, selectedTo];
     const vmax = Number(vmaxInput.value) || 120;
+
     summaryDiv.textContent = 'Berechne Route...';
-    routeLayer.clearLayers(); stationLayer.clearLayers();
+    routeLayer.clearLayers();
+    stationLayer.clearLayers();
 
     addStationMarker(selectedFrom, 'start');
     addStationMarker(selectedTo, 'end');

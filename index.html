@@ -33,8 +33,14 @@
       </div>
 
       <div class="field">
-        <label for="via">Wegpunkte (optional) — mit Komma getrennt; z.B. "Heilbronn, Tübingen"</label>
-        <input id="via" type="text" placeholder="Städte oder Bahnhöfe, durch Komma getrennt">
+        <label for="via">Wegpunkte (optional)</label>
+        <input id="via" type="text" placeholder="Bahnhof suchen" autocomplete="off">
+        <div id="via-list" class="autocomplete-list" style="display:none"></div>
+        <div id="via-list" class="autocomplete-list"></div>
+        <button id="add-via" class="btn-via" type="button">+ Zwischenstopp hinzufügen</button>
+
+        <div id="via-tags"></div> <!-- Anzeige der gewählten Zwischenstopps -->
+
       </div>
 
       <div class="field">
@@ -56,7 +62,7 @@
 
       <hr />
       <div class="small">Hinweis: Diese Web-App verwendet die öffentliche Overpass-API.<br>
-        <p>Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> - Version 1.1.2</p>
+        <p>Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> - Version 1.2</p>
       </div>
     </div>
 
@@ -69,6 +75,5 @@
   <script src="data/scripts/lock.js"></script>
 
 </body>
-
 
 </html>
