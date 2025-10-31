@@ -105,7 +105,7 @@ async function loadStations() {
         tags: el.tags
       }));
     addMessage(`✅ ${stationData.length} Stationen in Baden-Württemberg geladen.`, 'bot');
-    addMessage(`Gebe eine Route ein. z.B.(von RK nach TS über TBM um 13:00)`, 'bot')
+    addMessage(`Gebe eine Route ein. z.B.(RK nach TS über TBM um 13:00)`, 'bot')
   }
 }
 
@@ -225,10 +225,10 @@ async function handleUserMessage(text){
   addMessage(text,'user');
 
   // Regex: von START nach ZIEL über P1 über P2 ... um HH:MM
-  const regex = /von\s+(\S+)\s+nach\s+(\S+)((?:\s+über\s+\S+)*)\s*(?:um\s+(\d{1,2}:\d{2}))?/i;
+  const regex = /(\S+)\s+nach\s+(\S+)((?:\s+über\s+\S+)*)\s*(?:um\s+(\d{1,2}:\d{2}))?/i;
   const m = text.match(regex);
   if(!m){
-    addMessage("Bitte im Format 'von RK nach TU über TBM über TS um 14:30' schreiben.",'bot'); 
+    addMessage("Bitte im Format 'RK nach TU über TBM über TS um 14:30' schreiben.",'bot'); 
     return; 
   }
 
@@ -257,9 +257,9 @@ async function handleUserMessage(text){
   }
 
   const allPoints = [fromStation,...viaPoints,toStation];
-  const vmax = 120;
+  const vmax = 120; //Hier steht die Vmax
 
-  addMessage(`Berechne Route von ${fromStation.display} nach ${toStation.display}...`,'bot');
+  addMessage(`Ich berechne Route von ${fromStation.display} nach ${toStation.display}...`,'bot');
 
   try{
     routeLayer.clearLayers();
@@ -278,7 +278,7 @@ async function handleUserMessage(text){
 
     const total_h = Math.floor(res.totalTime_s/3600);
     const total_min = Math.round((res.totalTime_s%3600)/60);
-    let msg = `Route: ${(res.totalLen_m/1000).toFixed(1)} km — Fahrzeit: ${total_h}h ${total_min}min`;
+    let msg = `Route: ${(res.totalLen_m/1000).toFixed(1)} km — Fahrzeit: ${total_h}h ${total_min}min bei ${vmax} km/h`;
     if(timeStr){
       const [hh,mm] = timeStr.split(':').map(Number);
       const dep=new Date(); dep.setHours(hh,mm,0,0);

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BW Rail Explorer – Info</title>
   <link rel="stylesheet" href="data/styles/info.css">
 </head>
+
 <body>
 
   <header>
@@ -37,6 +39,22 @@
     </section>
 
     <section>
+      <h2>💬 Chat-Modus</h2>
+      <ul>
+        <li>Der Chat-Modus bietet eine interaktive Benutzeroberfläche mit einer modernen, minimalistischen Chatansicht.
+        </li>
+        <li>Nachrichten erscheinen als Sprechblasen – Benutzer rechts, System bzw. KI links.</li>
+        <li>Das Eingabefeld befindet sich fixiert am unteren Rand für schnelle Eingaben.</li>
+        <li>Antworten werden automatisch hinzugefügt und der Chat scrollt sanft nach unten.</li>
+        <!--<li>Auf mobilen Geräten wird die Karte ausgeblendet und durch eine kompakte Mini-Map im Chat ersetzt.</li>
+        <li>Das Design nutzt transparente Hintergründe, Blur-Effekte und responsive Anpassung für Desktop, Tablet und
+          Mobile.</li>-->
+        <li class="notice">Der Chat-Modus befindet sich in der Beta-Version und ist aktuell noch nicht für Handys verfügbar.</li>  
+      </ul>
+      
+    </section>
+
+    <section>
       <h2>🖱️ Bedienung</h2>
       <ol>
         <li>Trage Start- und Zielbahnhof in die Felder ein.</li>
@@ -51,8 +69,8 @@
     <section>
       <h2>📊 Datenquelle</h2>
       <p>
-        Die Bahnhofs- und Streckendaten basieren auf <strong>OpenStreetMap</strong> 
-        (über die Overpass API) sowie einer lokalen <code>stations.json</code>-Datei, 
+        Die Bahnhofs- und Streckendaten basieren auf <strong>OpenStreetMap</strong>
+        (über die Overpass API) sowie einer lokalen <code>stations.json</code>-Datei,
         die die Bahnhöfe in Baden-Württemberg enthält.
       </p>
       <p>
@@ -64,10 +82,13 @@
       <h2>💡 Häufige Probleme & Tipps</h2>
       <div class="problems">
         <ul>
-          <li><strong>Keine Route gefunden?</strong><br>Manchmal sind Bahnstreckenabschnitte in OSM unvollständig oder unterbrochen.</li>
-          <li><strong>Falscher Bahnhof?</strong><br>Versuche, den offiziellen Namen (z. B. „Stuttgart Hbf“) zu verwenden.</li>
+          <li><strong>Keine Route gefunden?</strong><br>Manchmal sind Bahnstreckenabschnitte in OSM unvollständig oder
+            unterbrochen.</li>
+          <li><strong>Falscher Bahnhof?</strong><br>Versuche, DS100 kürzel zu verwenden, diese findest du <a
+              href="https://michaeldittrich.de/abkuerzungen/index.php">hier</a>.</li>
           <li><strong>Karte leer?</strong><br>Überprüfe deine Internetverbindung oder lade die Seite neu.</li>
-          <li><strong>Berechnung dauert lange?</strong><br>Reduziere die Suchreichweite oder prüfe die Overpass-Verfügbarkeit.</li>
+          <li><strong>Berechnung dauert lange?</strong><br>Reduziere die Suchreichweite oder prüfe die
+            Overpass-Verfügbarkeit.</li>
         </ul>
       </div>
     </section>
@@ -87,4 +108,5 @@
 
   <script src="data/scripts/lock.js"></script>
 </body>
+
 </html>
