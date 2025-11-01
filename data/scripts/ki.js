@@ -233,7 +233,6 @@ async function handleUserMessage(text){
   }
 
   const [_, fromQ, toQ, viaStr, timeStr] = m;
-
   const viaMatches = [...viaStr.matchAll(/\s+über\s+(\S+)/g)];
   const viaPointsRaw = viaMatches.map(v=>v[1]);
 
@@ -257,9 +256,9 @@ async function handleUserMessage(text){
   }
 
   const allPoints = [fromStation,...viaPoints,toStation];
-  const vmax = 120; //Hier steht die Vmax
+  const vmax = 120; //Vmax des Zuges
 
-  addMessage(`Ich berechne Route von ${fromStation.display} nach ${toStation.display}...`,'bot');
+  addMessage(`Berechne Route von ${fromStation.display} nach ${toStation.display} mit maximal ${vmax} km/h...`,'bot');
 
   try{
     routeLayer.clearLayers();
@@ -272,13 +271,18 @@ async function handleUserMessage(text){
 
     const res = await computeRouteWithGraph(allPoints,vmax);
 
-    // Polyline
+    // Polyline auf der Hauptkarte
     const poly = L.polyline(res.polyline,{weight:5,color:'blue'}).addTo(routeLayer);
     map.fitBounds(poly.getBounds(),{padding:[40,40]});
 
+    // Mini-Map für mobile Ansicht
+    if (typeof showMiniMap === "function") {
+      showMiniMap(res.polyline);
+    }
+
     const total_h = Math.floor(res.totalTime_s/3600);
     const total_min = Math.round((res.totalTime_s%3600)/60);
-    let msg = `Route: ${(res.totalLen_m/1000).toFixed(1)} km — Fahrzeit: ${total_h}h ${total_min}min bei ${vmax} km/h`;
+    let msg = `Route: ${(res.totalLen_m/1000).toFixed(1)} km — Fahrzeit: ${total_h}h ${total_min}min`;
     if(timeStr){
       const [hh,mm] = timeStr.split(':').map(Number);
       const dep=new Date(); dep.setHours(hh,mm,0,0);
@@ -294,7 +298,7 @@ async function handleUserMessage(text){
 
   } catch(err){
     console.error(err);
-    addMessage('Fehler bei der Berechnung versuche es bitte erneut.','bot');
+    addMessage('Fehler bei der Berechnung, versuche es bitte erneut.','bot');
   }
 }
 
@@ -315,24 +319,9 @@ userInput.addEventListener('keypress',e=>{
 // -----------------------------
 loadStations();
 
-//Check device
-function checkMobile() {
-  const ua = navigator.userAgent || navigator.vendor || window.opera;
+// Hinweis: kein await außerhalb async-Funktionen mehr nötig
+// Mini-Map wird nur innerhalb von handleUserMessage() erzeugt
 
-  // Prüfe, ob es ein Mobiltelefon ist (aber kein Tablet)
-  const isPhone =
-    (/Mobi|Android|iPhone|iPod/i.test(ua)) && !/iPad|Tablet/i.test(ua);
 
-  if (isPhone) {
-    const warning = document.getElementById('mobile-warning');
-    const main = document.getElementById('main-content');
 
-    if (warning && main) {
-      warning.style.display = 'flex';
-      main.style.display = 'none';
-    }
-  }
-}
-
-window.addEventListener('load', checkMobile);
 

@@ -9,7 +9,7 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: #f0f2f5;
   color: #111;
   overflow: hidden;
@@ -21,6 +21,66 @@ html, body {
   inset: 0;
   z-index: 0;
 }
+
+/* === Mobile Ansicht (Smartphones) === */
+@media (max-width: 768px) {
+  #map {
+    display: none !important; /* Karte komplett ausblenden */
+  }
+
+  #chat-container {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100% !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    z-index: 100;
+    background: white !important;
+  }
+
+  #chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+
+  #user-input-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.7rem;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #ddd;
+  }
+
+  #user-input {
+    flex: 1;
+    background: #f1f3f6;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    font-size: 1rem;
+  }
+
+  #send-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    margin-left: 0.5rem;
+  }
+
+  /* Chat-Bubbles leicht größer auf Mobile */
+  .msg {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
 
 .leaflet-container {
   height: 100%;
@@ -102,7 +162,7 @@ html, body {
   align-items: center;
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  padding: 2px;
+  padding: 0.5rem;
   margin: 5px;
   border-radius: 20px;
 }
@@ -129,7 +189,7 @@ html, body {
   border-radius: 15px;
   width: 52px;
   height: 42px;
-  margin-right: 5px;
+  margin-right: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -139,7 +199,7 @@ html, body {
 
 #send-btn:hover {
   background: #2f6de0;
-  transform: scale(0.9);
+  transform: scale(1.05);
 }
 
 .home-btn {
@@ -232,18 +292,5 @@ html, body {
   #chat-container {
     width: 320px;
     height: 80vh;
-  }
-}
-
-/* Smartphones — blockieren */
-@media (max-width: 768px) {
-  #mobile-warning {
-    display: flex;
-    background: white;
-    color: #111;
-  }
-
-  #chat-container, #map {
-    display: none;
   }
 }

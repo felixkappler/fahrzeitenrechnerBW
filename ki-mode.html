@@ -11,38 +11,35 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
     <link rel="stylesheet" href="data/styles/ki-mode.css">
+
 </head>
 
 <body>
 
-    <body>
+    <div id="main-content">
+        <div id="map"></div>
 
-        <div id="mobile-warning">
-            <h2>Mobile Version noch nicht verfügbar!</h2>
-            <p>Bitte nutze einen PC oder ein Tablet.</p>
-            <a href="index.html">Zurück zur Startseite</a>
-        </div>
-
-        <div id="main-content">
-            <div id="map"></div>
-
-            <div id="chat-container">
-                <a class="home-btn" href="index.html">Zurück zur Startseite</a>
-                <div id="chat-messages"></div>
-                <div id="user-input-container">
-                    <input type="text" id="user-input" placeholder="Gebe eine Route ein.">
-                    <button id="send-btn">Senden</button>
-                </div>
-                <p class="version">Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> - Version 0.8.2beta</p>
+        <div id="chat-container">
+            <a class="home-btn" href="index.html">Zurück zur Startseite</a>
+            <p class="version">Entwickelt von <a href="https://flowwebdesign.de">FlowWebDesign</a> - Version
+                0.8.5beta
+            </p>
+            <div id="chat-messages"></div>
+            <div id="user-input-container">
+                <input type="text" id="user-input" placeholder="Gebe eine Route ein.">
+                <button id="send-btn">Senden</button>
             </div>
+
         </div>
+    </div>
 
-        <!-- Leaflet JS -->
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        <!-- KI Chat Script -->
-        <script src="data/scripts/ki.js"></script>
+    <!-- KI Chat Script -->
+    <script src="data/scripts/ki.js"></script>
+    <script src="data/scripts/mobile.js"></script>
 
-    </body>
+</body>
 
 </html>

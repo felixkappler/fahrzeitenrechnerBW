@@ -1,0 +1,144 @@
+/* === Mobile Ansicht === */
+@media (max-width: 768px) {
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background: #f7f9fb;
+    font-family: "Inter", system-ui, sans-serif;
+    overflow: hidden;
+  }
+
+  /* Hauptbereich: Map + Chat */
+  #main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* volle Höhe des Viewports */
+  }
+
+  /* Map auf Mobil ausblenden */
+  #map {
+    display: none !important;
+  }
+
+  /* Wrapper für Chat + Input */
+  #chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    height: 100%;
+  }
+
+  /* Chat-Container */
+  #chat-container {
+    flex: 1 1 auto;        /* nimmt den restlichen Platz */
+    overflow-y: auto;      /* scrollbar */
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* Chatblasen */
+  .msg {
+    max-width: 80%;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+  }
+
+  .msg.user {
+    align-self: flex-end;
+    background: #0066ff;
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+
+  .msg.bot {
+    align-self: flex-start;
+    background: #e5e8ee;
+    color: #222;
+    border-bottom-left-radius: 4px;
+  }
+
+  /* Input-Bereich fixiert unten */
+  #user-input-container {
+    flex: 0 0 auto;       /* feste Höhe */
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+    border-top: 1px solid #ddd;
+  }
+
+  #user-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  #send-btn {
+    margin-left: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: #0066ff;
+    color: white;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  #send-btn:hover {
+    background: #0050cc;
+  }
+
+  /* Mini-Map Vorschau im Chat */
+  .minimap-msg {
+    display: block;
+    overflow: hidden;
+    min-height: 200px;   /* sichtbare Höhe */
+    flex: none;          /* nicht vom Flex-Container beeinflusst */
+  }
+
+  .mini-map {
+    width: 100%;         /* volle Breite des Chat-Fensters */
+    height: 100%;        /* volle Höhe des Wrappers */
+    border-radius: 8px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  }
+
+  /* Leaflet Karten innerhalb von Chat-Nachrichten */
+  .msg.bot > div.leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 12px;
+    margin-top: 4px;
+  }
+
+  /* Home-Button und Version fix oben */
+  .home-btn {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #0066ff;
+    text-decoration: none;
+  }
+
+  .home-btn:hover {
+    text-decoration: underline;
+  }
+
+  .version {
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+}
