@@ -1,6 +1,8 @@
 /* === Mobile Ansicht === */
 @media (max-width: 768px) {
-  html, body {
+
+  html,
+  body {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -14,7 +16,8 @@
   #main-content {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* volle Höhe des Viewports */
+    height: 100vh;
+    /* volle Höhe des Viewports */
   }
 
   /* Map auf Mobil ausblenden */
@@ -22,18 +25,12 @@
     display: none !important;
   }
 
-  /* Wrapper für Chat + Input */
-  #chat-wrapper {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    height: 100%;
-  }
-
   /* Chat-Container */
   #chat-container {
-    flex: 1 1 auto;        /* nimmt den restlichen Platz */
-    overflow-y: auto;      /* scrollbar */
+    flex: 1 1 auto;
+    /* nimmt den restlichen Platz */
+    overflow-y: auto;
+    /* scrollbar */
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -66,13 +63,28 @@
 
   /* Input-Bereich fixiert unten */
   #user-input-container {
-    flex: 0 0 auto;       /* feste Höhe */
+    flex: 0 0 auto;
+    /* feste Höhe */
     height: 60px;
     display: flex;
     align-items: center;
     padding: 0.5rem 0.75rem;
     background: #fff;
     border-top: 1px solid #ddd;
+  }
+
+  /* Scrollbar Styling */
+  #chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  #chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+  }
+
+  #chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
   }
 
   #user-input {
@@ -104,19 +116,23 @@
   .minimap-msg {
     display: block;
     overflow: hidden;
-    min-height: 200px;   /* sichtbare Höhe */
-    flex: none;          /* nicht vom Flex-Container beeinflusst */
+    min-height: 200px;
+    /* sichtbare Höhe */
+    flex: none;
+    /* nicht vom Flex-Container beeinflusst */
   }
 
   .mini-map {
-    width: 100%;         /* volle Breite des Chat-Fensters */
-    height: 100%;        /* volle Höhe des Wrappers */
+    width: 100%;
+    /* volle Breite des Chat-Fensters */
+    height: 100%;
+    /* volle Höhe des Wrappers */
     border-radius: 8px;
-    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
   }
 
   /* Leaflet Karten innerhalb von Chat-Nachrichten */
-  .msg.bot > div.leaflet-container {
+  .msg.bot>div.leaflet-container {
     width: 100% !important;
     height: 100% !important;
     border-radius: 12px;
@@ -139,6 +155,6 @@
   .version {
     font-size: 0.75rem;
     color: #666;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.7rem;
   }
 }

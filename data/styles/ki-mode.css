@@ -44,7 +44,7 @@ html, body {
 
   #chat-messages {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: 65px;
     padding: 1rem;
   }
 
@@ -115,6 +115,13 @@ html, body {
   flex-direction: column;
   gap: 0.7rem;
   scroll-behavior: smooth;
+}
+
+@media (max-width: 768px) {
+  #chat-messages {
+    margin-bottom: 65px;
+  }
+  
 }
 
 /* Scrollbar Styling */
@@ -217,7 +224,7 @@ html, body {
 .version {
     text-align: center;
     padding-top: -10px;
-    font-size: 0.5rem;
+    font-size: 0.7rem;
 }
 
 .version a {
