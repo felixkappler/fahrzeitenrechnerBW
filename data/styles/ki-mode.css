@@ -196,7 +196,6 @@ html, body {
   border-radius: 15px;
   width: 52px;
   height: 42px;
-  margin-right: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -215,6 +214,9 @@ html, body {
     text-decoration: none;
     color: white;
     text-align: center;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-inline: 10px;
 }
 
 .home-btn:hover {
@@ -223,8 +225,11 @@ html, body {
 
 .version {
     text-align: center;
-    padding-top: -10px;
+    padding: 7px;
+    margin: 10px;
     font-size: 0.7rem;
+    background: #f1f3f6;
+    border-radius: 10px;
 }
 
 .version a {
